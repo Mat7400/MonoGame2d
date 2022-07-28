@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace MonoGameOpenGLPong
 {
@@ -48,6 +49,8 @@ namespace MonoGameOpenGLPong
             ballTexture = Content.Load<Texture2D>("ball");
         }
 
+        Random rnd = new Random();
+         
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -58,6 +61,48 @@ namespace MonoGameOpenGLPong
             //user input
             var kstate = Keyboard.GetState();
 
+            //random movement
+            int sec = (int)gameTime.ElapsedGameTime.TotalSeconds;
+            int speed = rnd.Next(1, 9);
+            int where = rnd.Next(1, 4);
+            if (sec % 3 == 0)
+            {
+                if (where == 1)
+                {
+                    ballPosition.X += speed;
+                }
+                else if (where == 2)
+                {
+                    ballPosition.X -= speed;
+                }
+                else if (where == 3)
+                {
+                    ballPosition.Y -= speed;
+                }
+                else if (where == 4)
+                {
+                    ballPosition.Y += speed;
+                }
+
+                if (ballPosition.X > _graphics.PreferredBackBufferWidth - ballTexture.Width / 2)
+                {
+                    ballPosition.X = _graphics.PreferredBackBufferWidth - ballTexture.Width / 2;
+                }
+                else if (ballPosition.X < ballTexture.Width / 2)
+                {
+                    ballPosition.X = ballTexture.Width / 2;
+                }
+
+                if (ballPosition.Y > _graphics.PreferredBackBufferHeight - ballTexture.Height / 2)
+                {
+                    ballPosition.Y = _graphics.PreferredBackBufferHeight - ballTexture.Height / 2;
+                }
+                else if (ballPosition.Y < ballTexture.Height / 2)
+                {
+                    ballPosition.Y = ballTexture.Height / 2;
+                }
+
+            }
             if (kstate.IsKeyDown(Keys.Up))
             {
                 ballPosition.Y -= ballSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
