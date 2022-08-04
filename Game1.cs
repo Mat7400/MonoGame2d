@@ -13,9 +13,17 @@ namespace MonoGameOpenGLPong
         Texture2D ballTexture;
 
         /// <summary>
-        /// for ball display
+        /// pirate idle 001
         /// </summary>
         Texture2D pirateTexture;
+
+        Texture2D piratewalk00;
+        Texture2D piratewalk01;
+        Texture2D piratewalk02;
+        Texture2D piratewalk03;
+        Texture2D piratewalk04;
+        Texture2D piratewalk05;
+        Texture2D piratewalk06;
 
         /// <summary>
         /// for ball vector
@@ -31,8 +39,19 @@ namespace MonoGameOpenGLPong
         /// </summary>
         float ballSpeed;
 
+        /// <summary>
+        /// Глобальная переменнная GraphicsDeviceManager graphics позволяет получить доступ 
+        /// к графическому устройству компьютера, смартфона, планшета, игровой консоли. 
+        /// Объект GraphicsDeviceManager является проводником между игрой и видеокартой, 
+        /// и вся отрисовка в игре будет проходить через этот объект.
+        /// </summary>
         private GraphicsDeviceManager _graphics;
+
+        /// <summary>
+        /// spriteBatch служит для отрисовки спрайтов - изображений, которые используются в игре.
+        /// </summary>
         private SpriteBatch _spriteBatch;
+
         //8 координат с пиратом
         int p_LeftTopX = 0;
         int p_LeftTopY = 0;
@@ -59,6 +78,9 @@ namespace MonoGameOpenGLPong
         int BallrightbottomY = 0;
         int BallrighttopY = 0;
 
+        /// <summary>
+        /// конструктор - запускаем графическое устройство и разрешение экрана
+        /// </summary>
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -68,6 +90,9 @@ namespace MonoGameOpenGLPong
             IsMouseVisible = true;
         }
 
+        /// <summary>
+        /// инициализация начальных позиций
+        /// </summary>
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -78,28 +103,42 @@ namespace MonoGameOpenGLPong
             
             BallX = _graphics.PreferredBackBufferWidth / 2;
             BallY = _graphics.PreferredBackBufferHeight / 2;
-            
-            
 
-            piratePosition = new Vector2(pX, pY);
+
+
+           
 
             ballSpeed = 100f;
 
             base.Initialize();
         }
-
+        /// <summary>
+        /// загружаем текстуры
+        /// </summary>
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            ballTexture = Content.Load<Texture2D>("ball");
+            ballTexture = Content.Load<Texture2D>("ballknight");
 
             BalllefttopX = BallX - ballTexture.Width / 2;
             BalllefttopY = BallY - ballTexture.Height / 2;
 
             //текстура пирата
             pirateTexture = Content.Load<Texture2D>("3_3-PIRATE_IDLE_001");
+            piratePosition = new Vector2(
+               (Window.ClientBounds.Width / 2) - (pirateTexture.Width / 2),
+               (Window.ClientBounds.Height / 2) - (pirateTexture.Height / 2));
+
+            piratewalk00 = Content.Load<Texture2D>("3_3-PIRATE_WALK_000");
+            piratewalk01 = Content.Load<Texture2D>("3_3-PIRATE_WALK_001");
+            piratewalk02 = Content.Load<Texture2D>("3_3-PIRATE_WALK_002");
+            piratewalk03 = Content.Load<Texture2D>("3_3-PIRATE_WALK_003");
+            piratewalk04 = Content.Load<Texture2D>("3_3-PIRATE_WALK_004");
+            piratewalk05 = Content.Load<Texture2D>("3_3-PIRATE_WALK_005");
+            piratewalk06 = Content.Load<Texture2D>("3_3-PIRATE_WALK_006");
+
             //width
             p_LeftTopX = pX - pirateTexture.Width / 2;
             p_LeftTopY = pY - pirateTexture.Height / 2; 
@@ -114,6 +153,7 @@ namespace MonoGameOpenGLPong
             p_RightBottomY = pY + pirateTexture.Height / 2;
 
         }
+
         public Rectangle PlayerRectangle(Texture2D player)
         {
             
@@ -134,6 +174,10 @@ namespace MonoGameOpenGLPong
         }
         Random rnd = new Random();
          
+        /// <summary>
+        /// главный цикл игры повторяющийся
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -184,6 +228,7 @@ namespace MonoGameOpenGLPong
             }
             base.Update(gameTime);
         }
+
         private void MoveBall(int sec, int speed, int where)
         {
             if (sec % 3 == 0)
@@ -225,6 +270,17 @@ namespace MonoGameOpenGLPong
 
             }
         }
+
+        int counterPirateWalk = 0;
+        int prevsec = 0;
+        /// <summary>
+        /// вызывается 60 раз в секунду
+        /// Метод Draw() выполняет перерисовку экрана. Например, в методе Update обновляется позиция персонажа, 
+        /// а в методе Draw() происходит перерисовка персонажа на основе новой позиции. 
+        /// При этом важно учитывать, что все вычисления должны находиться 
+        /// в методе Update. Задача метода Draw - только перерисовка.
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -245,8 +301,117 @@ namespace MonoGameOpenGLPong
             );
 
             Rectangle rect = new Rectangle(1, 1, 255, 255);
-            //_spriteBatch.Draw(pirateTexture, piratePosition, rect, Color.White , 0 , piratePosition, 0.3f, SpriteEffects.None, 0f);
-            _spriteBatch.Draw(pirateTexture, piratePosition, Color.White);
+            float scale = 0.3f;
+            //рисование с масштабом в 0.3 (30%)
+            
+            //стоящий неподвижно пират
+            //_spriteBatch.Draw(pirateTexture,
+            //piratePosition,
+            //null,
+            //Color.White,
+            //0,
+            //Vector2.Zero,
+            //scale,
+            //SpriteEffects.None,
+            //0);
+
+            int sec = (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+            if (sec>0  )
+            {
+                piratePosition = new Vector2(
+                    (Window.ClientBounds.Width / 2) - (pirateTexture.Width / 2) + sec*5,
+                    (Window.ClientBounds.Height / 2) - (pirateTexture.Height / 2));
+
+                if (counterPirateWalk == 0)
+                {
+                    _spriteBatch.Draw(piratewalk00,
+                    piratePosition,
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                }
+                if (counterPirateWalk == 1)
+                {
+                    _spriteBatch.Draw(piratewalk01,
+                    piratePosition,
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                }
+                if (counterPirateWalk == 2)
+                {
+                    _spriteBatch.Draw(piratewalk02,
+                    piratePosition,
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                }
+                if (counterPirateWalk == 3)
+                {
+                    _spriteBatch.Draw(piratewalk03,
+                    piratePosition,
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                }
+                if (counterPirateWalk == 4)
+                {
+                    _spriteBatch.Draw(piratewalk04,
+                    piratePosition,
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                }
+                if (counterPirateWalk == 5)
+                {
+                    _spriteBatch.Draw(piratewalk05,
+                    piratePosition,
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                }
+                if (counterPirateWalk == 6)
+                {
+                    _spriteBatch.Draw(piratewalk06,
+                    piratePosition,
+                    null,
+                    Color.White,
+                    0,
+                    Vector2.Zero,
+                    scale,
+                    SpriteEffects.None,
+                    0);
+                }
+                counterPirateWalk++;
+                if (counterPirateWalk > 6) counterPirateWalk = 0;
+             }
+           
+            prevsec = sec;
+
             //отрисовка пирата
             //float scale = .5f; //50% smaller
             //Vector2 pos2 = new Vector2(0, 0);

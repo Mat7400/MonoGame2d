@@ -73,3 +73,4 @@ C:\Users\matve\source\repos\MonoGameOpenGLPong\MonoGameOpenGLPong\bin\Debug\net6
 C:\Users\matve\source\repos\MonoGameOpenGLPong\MonoGameOpenGLPong\bin\Debug\net6.0\Content\3_3-PIRATE_WALK_004.xnb
 C:\Users\matve\source\repos\MonoGameOpenGLPong\MonoGameOpenGLPong\bin\Debug\net6.0\Content\3_3-PIRATE_WALK_005.xnb
 C:\Users\matve\source\repos\MonoGameOpenGLPong\MonoGameOpenGLPong\bin\Debug\net6.0\Content\3_3-PIRATE_WALK_006.xnb
+C:\Users\matve\source\repos\MonoGameOpenGLPong\MonoGameOpenGLPong\bin\Debug\net6.0\Content\ballknight.xnb
